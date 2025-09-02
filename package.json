@@ -1,0 +1,38 @@
+{
+  "name": "rccg-hof-mailer",
+  "version": "0.0.1",
+  "description": "A simple Node.js app for House of Favour that fetches data from Google Forms responses and sends out emails to community members.",
+  "keywords": [
+    "house-of-favour",
+    "church",
+    "google-forms",
+    "google-sheets",
+    "csv",
+    "email",
+    "mailer",
+    "nodemailer",
+    "community",
+    "data-fetching",
+    "newsletter",
+    "nodejs"
+  ],
+  "homepage": "https://github.com/ojooh/rccg_hof_mailer#readme",
+  "bugs": {
+    "url": "https://github.com/ojooh/rccg_hof_mailer/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ojooh/rccg_hof_mailer.git"
+  },
+  "license": "ISC",
+  "author": "David Matt-Ojo",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.11.0",
+    "csv-parser": "^3.2.0"
+  }
+}
