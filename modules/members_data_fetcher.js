@@ -158,7 +158,7 @@ class MemberDataFetcher {
 
 	// Method to update existing data with new row data
     _updateLocalDbData = (new_rows, existing_map, existing_rows) => {
-        const merged_rows = [];
+        const merged_rows = [...existing_rows];
 
         for (const new_row of new_rows) {
             const key = this._getRowKey(new_row);
@@ -179,8 +179,6 @@ class MemberDataFetcher {
                 } else {
                     this.logger.info(`No changes detected for: ${key}`);
                 }
-
-                merged_rows.push(existing_row);
             } else {
                 new_row.id = this._id_counter++;
                 merged_rows.push(new_row);

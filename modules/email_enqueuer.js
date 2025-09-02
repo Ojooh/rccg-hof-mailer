@@ -109,6 +109,13 @@ class EmailEnqueuer {
                     continue;
                 }
 
+                const is_exist = logs.find((obj) => { return obj.member === member.id && template_id})
+
+                if(is_exist) {
+                    this.logger.alert(`Skipping member (Email alread sent)`, { member });
+                    continue;
+                }
+
                 const now_date = new Date().toISOString();
                 const unique_id = `${member.id}_${template_id}_${Date.now()}`;
                 const subject = this.ejs_renderer.renderString(template.subject, member);

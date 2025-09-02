@@ -23,7 +23,7 @@ class EventHandler {
         this.processing_emails = false;
 
         // Delay before batch processing (ms)
-        this.BATCH_DELAY = 200; 
+        this.BATCH_DELAY = 2000; 
     }
 
     // Add member to enqueue queue
@@ -38,11 +38,11 @@ class EventHandler {
 
     // Process all members in the enqueue queue
     _processEnqueueQueue = async () => {
-        const membersToProcess = [...this.enqueue_queue];
+        const members_to_process = [...this.enqueue_queue];
         this.enqueue_queue = []; // reset queue
 
         try {
-            await this.email_enqueuer.enqueueEmails(membersToProcess, 1);
+            await this.email_enqueuer.enqueueEmails(members_to_process, 1);
         } catch (err) {
             this.logger.error("Failed to enqueue batch", { error: err });
         } finally {

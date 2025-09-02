@@ -66,6 +66,9 @@ class MemberManager {
                 case "service_unit":
                     results = results.filter(m => m.service_units?.some(u => u.toLowerCase() === value.toLowerCase()));
                     break;
+                case "emails_in":
+                    results = results.filter(m => value.includes(m.email_address.toLowerCase()));
+                    break;
             }
         });
 

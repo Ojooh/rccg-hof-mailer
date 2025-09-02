@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title><%= subject %></title>
+    <%- include('includes/styles') %>
+</head>
+<body style="font-family: Helvetica, sans-serif; background-color: #f4f5f6; margin: 0; padding: 0;">
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body" width="100%" bgcolor="#f4f5f6">
+        <tr>
+            <td>&nbsp;</td>
+            <td class="container" width="600" valign="top">
+
+                <!-- Include header -->
+                <%- include('includes/header') %>
+
+                <div class="content" style="box-sizing: border-box; display: block; margin: 0 auto; max-width: 600px; padding: 0;">
+                    <span class="preheader" style="display: none; max-height: 0; opacity: 0; overflow: hidden;">
+                        <%= subject %>
+                    </span>
+
+                    <table role="presentation" class="main" width="100%" style="background: #ffffff; border: 1px solid #eaebed; border-radius: 16px;">
+                        <tr>
+                            <td class="wrapper" style="padding: 24px;">
+                                <h2 style="margin: 0 0 16px; font-size: 20px; color: #333333;">
+                                    <%= subject %>
+                                </h2>
+
+                                <p>Hello <%= title %> <%= first_name %>,</p>
+
+                                <p>🌟 A blessed new week to you in Jesus’ name! 🙏✨<br>
+                                We pray that this week will bring you peace, joy, and open doors of favour in every area of your life. 💒🙌</p>
+
+                                <h3>Stay Connected ⬇️</h3>
+
+                                <p>📺 <strong>Watch & Subscribe:</strong> Don’t miss our uplifting messages and services on YouTube:<br>
+                                <a href="https://www.youtube.com/@RCCG-HouseofFavourEastbourne">👉 RCCG House of Favour YouTube</a></p>
+
+                                <p>📸 <strong>Follow Us on Instagram:</strong> Stay updated with events, inspiration, and family moments:<br>
+                                <a href="https://www.instagram.com/houseoffavour_rccg/">👉 houseoffavour_rccg</a></p>
+
+                                <p>💌 <strong>Share Your Testimony:</strong> Has the Lord been good to you? 🙌<br>
+                                Send it to: <a href="mailto:testimonies@rccghofeastbourne.org">testimonies@rccghofeastbourne.org</a></p>
+
+                                <p>⏪ <strong>Missed Sunday Service?</strong> Catch the recap here:<br>
+                                <a href="https://www.youtube.com/watch?v=xwxiI5udhus">👉 Watch the Sunday Service Recap</a></p>
+
+                                <p>🙏 <em>Our prayer for you:</em> May this week overflow with God’s blessings, divine favour, and unshakable joy. ✨</p>
+
+                                <p>Stay blessed and connected, family 💖✨</p>
+                                <p>With love,</p>
+                                <p>RCCG House of Favour Eastbourne Media Unit</p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Include footer -->
+                    <%- include('includes/footer') %>
+
+                </div>
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</body>
+</html>
