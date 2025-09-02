@@ -16,13 +16,13 @@
     "newsletter",
     "nodejs"
   ],
-  "homepage": "https://github.com/ojooh/rccg_hof_mailer#readme",
+  "homepage": "https://github.com/ojooh/rccg-hof-mailer#readme",
   "bugs": {
-    "url": "https://github.com/ojooh/rccg_hof_mailer/issues"
+    "url": "https://github.com/ojooh/rccg-hof-mailer/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ojooh/rccg_hof_mailer.git"
+    "url": "git+https://github.com/ojooh/rccg-hof-mailer.git"
   },
   "license": "ISC",
   "author": "David Matt-Ojo",
