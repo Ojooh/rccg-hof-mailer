@@ -1,6 +1,6 @@
 const fs                = require("fs");
 const path              = require("path");
-const lockfile          = require("proper-lockfile");
+const LockedFileUtil    = require("../utils/locked_file_util");
 const EjsRendererUtil   = require("../utils/ejs_renderer_util");
 const LoggerUtil        = require("../utils/logger_util");
 
@@ -9,15 +9,18 @@ const {
 } = require("../enums/constants");
 
 class EmailEnqueuer {
-    constructor() {
-        this.module_name    = "email_enqueuer";
-        this.base_dir       = process.cwd();
-        this.db_dir         = this._ensureDirExist(path.join(this.base_dir, "local_db"));
-        this.templates_file = path.join(__dirname, "email_templates.json");
-        this.sent_log_file  = path.join(__dirname, "sent_emails.json");
+    constructor(event_system_instance = null) {
+        this.module_name            = "email_enqueuer";
+        this.base_dir               = process.cwd();
+        this.db_dir                 = this._ensureDirExist(path.join(this.base_dir, "local_db"));
+        this.templates_file         = path.join(this.db_dir, "email_templates.json");
+        this.sent_log_file          = path.join(this.db_dir, "sent_emails.json");
 
-        this.ejs_renderer   = new EjsRendererUtil(this.module_name);
-        this.logger         = new LoggerUtil(this.module_name);
+        this.ejs_renderer           = new EjsRendererUtil(this.module_name);
+        this.logger                 = new LoggerUtil(this.module_name);
+        this.file_locker            = new LockedFileUtil(this.logger);
+        this.event_system_instance 	= event_system_instance;
+        this.enqueued_count         = 0;
 
         this._preLoadSentEmails();
     }
@@ -78,6 +81,14 @@ class EmailEnqueuer {
         return template;
     };
 
+    // Private method to trigger email qued event
+    _triggerEmailsQueuedEvent = () => {
+        if (this.event_system_instance && this.enqueued_count) {
+            this.event_system_instance.emit("email_enqueued", this.enqueued_count);
+        }
+        this.enqueued_count  = 0;
+    }
+
     // Method to enqueue emails
     enqueueEmails = async (members, template_id) => {
         const template = this._getTemplateById(template_id);
@@ -86,14 +97,11 @@ class EmailEnqueuer {
             throw new Error(`Template with id ${template_id} not found`);
         }
 
-        let release;
         try {
-            release     = await lockfile.lock(this.sent_log_file);
-            const logs  = this._loadExistingEmailSentLogs();
+            // Safely read existing logs using LockedFileUtil
+            const logs = await this.file_locker.readJson(this.sent_log_file);
 
             this.logger.info(`Acquired lock on ${this.sent_log_file}`);
-
-            let enqueued_count = 0;
 
             for (const member of members) {
                 if (!member.email_address || !member.id) {
@@ -102,9 +110,11 @@ class EmailEnqueuer {
                 }
 
                 const now_date = new Date().toISOString();
+                const unique_id = `${member.id}_${template_id}_${Date.now()}`;
                 const subject = this.ejs_renderer.renderString(template.subject, member);
 
                 logs.push({
+                    id: unique_id,
                     member_id: member.id,
                     email_address: member.email_address,
                     template_id,
@@ -116,22 +126,23 @@ class EmailEnqueuer {
                     sent_at: null
                 });
 
-                enqueued_count++;
+                this.enqueued_count++;
+
                 this.logger.info(`Enqueued email for member ${member.id}`, { email: member.email_address });
             }
 
-            fs.writeFileSync(this.sent_log_file, JSON.stringify(logs, null, 2));
-            this.logger.success(`Enqueued ${enqueued_count} emails using template ${template_id}`);
+            // Safely update file using LockedFileUtil
+            await this.file_locker.updateJson(this.sent_log_file, logs);
+            this.logger.success(`Enqueued ${this.enqueued_count} emails using template ${template_id}`);
 
-            return enqueued_count;
-        } catch (error) {
+            return this.enqueued_count;
+        } 
+        catch (error) {
             this.logger.error("Failed to enqueue emails", { error });
             return 0;
-        } finally {
-            if (release) {
-                await release();
-                this.logger.info(`Released lock on ${this.sent_log_file}`);
-            }
+        }
+        finally {
+            this._triggerEmailsQueuedEvent();
         }
     };
 }

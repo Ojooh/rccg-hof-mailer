@@ -41,9 +41,9 @@ class LoggerUtil {
 
         fs.appendFileSync(this.log_file_path, log_message);
 
-        console.log(`\n${timestamp} [${status}] ${message}\n`);
+        if (status == "ERROR") { console.log(`\n${timestamp} [${status}] ${message}\n`); }
 
-        if(status === "error" && data_error && Object.keys(data_error).length) {
+        if(status === "ERROR" && data_error && Object.keys(data_error).length) {
            console.log({ data_error});
            console.log("\n");
            console.log("========================================");

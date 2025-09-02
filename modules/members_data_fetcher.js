@@ -78,12 +78,39 @@ class MemberDataFetcher {
                 const snake_key = key.trim().toLowerCase()
                     .replace(/\s+/g, "_")
                     .replace(/[^\w]/g, "");
-                normalized[snake_key] = row[key] ? row[key].trim() : "";
+                normalized[snake_key] = row[key] ? String(row[key]).trim() : "";
             }
         }
+
+        // Normalize timestamp -> ISO string
+        if (normalized.timestamp) {
+            const parsed = new Date(normalized.timestamp);
+            normalized.timestamp = isNaN(parsed) ? normalized.timestamp : parsed.toISOString();
+        }
+
+        // Normalize date_of_birth -> YYYY-MM-DD if possible
+        if (normalized.date_of_birth) {
+            const dob = new Date(normalized.date_of_birth);
+            normalized.date_of_birth = isNaN(dob) ? normalized.date_of_birth : dob.toISOString().split("T")[0];
+        }
+
+        // is_born_again: Yes/No -> boolean
+        normalized.is_born_again = (normalized.are_you_born_again_?.toLowerCase() === "yes");
+
+        // Normalize service units -> array
+        const raw_units = normalized.what_service_unit_do_you_belong_to_ || "";
+        normalized.service_units = raw_units
+            .split(",")
+            .map(u => u.trim())
+            .filter(u => u.length > 0 && u.toLowerCase() !== "i belong to no service unit");
+
+        // Derived field: is_a_worker
+        normalized.is_a_worker = normalized.service_units.length > 0;
+
         this.logger.info("Normalized row", normalized);
         return normalized;
     }
+
 
 	// Private Method to get row key
     _getRowKey = (row) => {
@@ -175,16 +202,16 @@ module.exports = MemberDataFetcher;
 
 // === Usage Example ===
 
-const EventSystemUtil 		= require("../utils/event_system_util");
-const event_system_instance = new EventSystemUtil();
+// const EventSystemUtil 		= require("../utils/event_system_util");
+// const event_system_instance = new EventSystemUtil();
 
-event_system_instance.on("new_member_registered", (member) => {
-    console.log("🎉 New member registered:", member.first_name, member.last_name);
-});
+// event_system_instance.on("new_member_registered", (member) => {
+//     console.log("🎉 New member registered:", member.first_name, member.last_name);
+// });
 
 
-const fetcher = new MemberDataFetcher(event_system_instance);
+// const fetcher = new MemberDataFetcher(event_system_instance);
 
-(async () => {
-    await fetcher.saveData();
-})();
+// (async () => {
+//     await fetcher.saveData();
+// })();
