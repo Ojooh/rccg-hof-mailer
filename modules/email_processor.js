@@ -13,20 +13,22 @@ const {
 
 class EmailProcessor {
     constructor() {
-        this.module_name    = "email_processor";
-        this.base_dir       = process.cwd();
-        this.preview        = PREVIEW_MODE;
-        this.transporter    = this._getMailerTransporter();
-        this.db_dir         = this._ensureDirExist(path.join(this.base_dir, "local_db"));
-        this.preview_dir    = this._ensureDirExist(path.join(this.base_dir, "preview_mails"));
+        this.module_name        = "email_processor";
+        this.base_dir           = process.cwd();
+        this.preview            = PREVIEW_MODE;
+        this.transporter        = this._getMailerTransporter();
+        this.db_dir             = this._ensureDirExist(path.join(this.base_dir, "local_db"));
+        this.preview_dir        = this._ensureDirExist(path.join(this.base_dir, "preview_mails"));
 
-        this.templates_file = path.join(this.db_dir, "email_templates.json");
-        this.members_file   = path.join(this.db_dir, "hof_member_data.json");
-        this.sent_log_file  = path.join(this.db_dir, "sent_emails.json");
+        this.member_file_name   = this.preview ? "hof_member_data.json" : "live_member_data.json";
+        this.send_log_file_name = this.preview ? "sent_emails.json" : "live_sent_emails.json";
+        this.templates_file     = path.join(this.db_dir, "email_templates.json");
+        this.members_file       = path.join(this.db_dir, this.member_file_name);
+        this.sent_log_file      = path.join(this.db_dir, this.send_log_file_name);
 
-        this.ejs_renderer   = new EjsRendererUtil(this.module_name);
-        this.logger         = new LoggerUtil(this.module_name);
-        this.file_locker    = new LockedFileUtil(this.logger);
+        this.ejs_renderer       = new EjsRendererUtil(this.module_name);
+        this.logger             = new LoggerUtil(this.module_name);
+        this.file_locker        = new LockedFileUtil(this.logger);
     }
 
     // Ensure directory exists
@@ -40,6 +42,7 @@ class EmailProcessor {
         if (this.preview) return null; // no transporter in preview mode
         const user = GMAIL_CONFIG.email_address;
         const pass = GMAIL_CONFIG.password;
+        
         return nodemailer.createTransport({
             service: "gmail",
             auth: { user, pass }

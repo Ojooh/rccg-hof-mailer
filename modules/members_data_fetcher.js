@@ -5,7 +5,8 @@ const fs            = require("fs");
 const path          = require("path");
 const LoggerUtil 	= require("../utils/logger_util");
 const {
-	PUBLIC_MEMBER_DATA_CSV_LINK
+	PUBLIC_MEMBER_DATA_CSV_LINK,
+    PREVIEW_MODE
 } = require("../enums/constants")
 
 class MemberDataFetcher {
@@ -14,8 +15,9 @@ class MemberDataFetcher {
         this.csv_url        		= PUBLIC_MEMBER_DATA_CSV_LINK;
         this._id_counter    		= 1;
 		this.base_dir 				= process.cwd();
+        this.preview                = PREVIEW_MODE;
         this.db_dir         		= this._ensureDirExist(path.join(this.base_dir, "local_db"));
-        this.db_file_name   		= "hof_member_data.json";
+        this.db_file_name   		= this.preview ? "hof_member_data.json" : "live_member_data.json";
 
 		this.logger 				= new LoggerUtil(this.module_name);
 		this.event_system_instance 	= event_system_instance;

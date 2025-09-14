@@ -18,12 +18,12 @@ class MainApp {
     }
 
     runMailer = async () => {
-        const filter = { is_a_worker: true, service_unit: "Multimedia", emails_in: ["dotun.adio@gmail.com", "drsalami.oluwafunsho@gmail.com", "davidmatthoo@outlook.com"] }
-        const workers = this.member_manager.findAll(filter);
-        console.log(`Sending Email to ${workers.length} Member Record(s) found`);
+        // const filter = { is_a_worker: true, service_unit: "Multimedia", emails_in: ["dotun.adio@gmail.com", "drsalami.oluwafunsho@gmail.com", "davidmatthoo@outlook.com"] }
+        // const workers = this.member_manager.findAll(filter);
+        // console.log(`Sending Email to ${workers.length} Member Record(s) found`);
 
-        await this.event_handler.email_enqueuer.enqueueEmails(workers, 1);
-        await this.event_handler.email_enqueuer.enqueueEmails(workers, 2);
+        // await this.event_handler.email_enqueuer.enqueueEmails(workers, 1);
+        // await this.event_handler.email_enqueuer.enqueueEmails(workers, 2);
     }
 
     run = async () => {

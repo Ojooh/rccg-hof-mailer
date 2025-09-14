@@ -2,12 +2,18 @@ const fs            = require("fs");
 const path          = require("path");
 const LoggerUtil    = require("../utils/logger_util");
 
+const { 
+    PREVIEW_MODE
+} = require("../enums/constants");
+
 class MemberManager {
     constructor() {
-        this.module_name    = "member_manager";
-        this.base_dir       = process.cwd();
-        this.db_dir         = path.join(this.base_dir, "local_db");
-        this.members_file   = path.join(this.db_dir, "hof_member_data.json");
+        this.module_name        = "member_manager";
+        this.base_dir           = process.cwd();
+        this.preview            = PREVIEW_MODE;
+        this.member_file_name   = this.preview ? "hof_member_data.json" : "live_member_data.json";
+        this.db_dir             = path.join(this.base_dir, "local_db");
+        this.members_file       = path.join(this.db_dir, this.member_file_name);
 
         this.logger         = new LoggerUtil(this.module_name);
     }

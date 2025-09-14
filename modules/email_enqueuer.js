@@ -5,16 +5,19 @@ const EjsRendererUtil   = require("../utils/ejs_renderer_util");
 const LoggerUtil        = require("../utils/logger_util");
 
 const {
-    EMAIL_STATUS
+    EMAIL_STATUS,
+    PREVIEW_MODE
 } = require("../enums/constants");
 
 class EmailEnqueuer {
     constructor(event_system_instance = null) {
         this.module_name            = "email_enqueuer";
         this.base_dir               = process.cwd();
+        this.preview                = PREVIEW_MODE;
         this.db_dir                 = this._ensureDirExist(path.join(this.base_dir, "local_db"));
+        this.send_log_file_name     = this.preview ? "sent_emails.json" : "live_sent_emails.json";
         this.templates_file         = path.join(this.db_dir, "email_templates.json");
-        this.sent_log_file          = path.join(this.db_dir, "sent_emails.json");
+        this.sent_log_file          = path.join(this.db_dir, this.send_log_file_name);
 
         this.ejs_renderer           = new EjsRendererUtil(this.module_name);
         this.logger                 = new LoggerUtil(this.module_name);
